@@ -46,8 +46,12 @@
               });
             };
             removeSlide = function(collectionItem, index) {
-              var slideItem, track;
-              track = getTrackFromItem(collectionItem, index);
+              var idx, keys, slideItem, track;
+              keys = Object.keys(slidesItems);
+              idx = keys.findIndex((function(k, idx) {
+                  return slidesItems[k].collectionItem === collectionItem;
+              }));
+              track = keys[idx];
               slideItem = slidesItems[track];
               if (slideItem == null) {
                 return;
@@ -87,15 +91,17 @@
                   return _results;
                 })();
                 toRemove = (function() {
-                  var _results;
-                  _results = [];
-                  for (t in slidesItems) {
-                    i = slidesItems[t];
-                    if (trackCollection[t] == null) {
-                      _results.push(i.collectionItem);
-                    }
-                  }
-                  return _results;
+                    var results;
+                    results = [];
+                    for (t in slidesItems) {
+                      i = slidesItems[t];
+                      if ((Object.keys(trackCollection).findIndex(function(k) {
+                        return trackCollection[k] === i.collectionItem;
+                      })) < 0) {
+                        results.push(i.collectionItem);
+                      }
+                   }
+                   return results;
                 })();
                 if ((toAdd.length === 1 && toRemove.length === 0) || toAdd.length === 0) {
                   for (_j = 0, _len1 = toRemove.length; _j < _len1; _j++) {
