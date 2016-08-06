@@ -66,7 +66,10 @@ angular.module('angular-flexslider', [])
 						for c, i in collection
 							trackCollection[getTrackFromItem(c, i)] = c
 						# Generates arrays of collection items to add and remvoe
-						toAdd = ({ value: c, index: i } for c, i in collection when not slidesItems[getTrackFromItem(c, i)]?)
+						currentIndex = Object.keys(slidesItems).length
+                                                toAdd = ({ value: c, index: currentIndex++ } for c, i in collection when (Object.keys(slidesItems).findIndex((k) ->
+                                                        return slidesItems[k].collectionItem == c
+                                                )) < 0)
 						toRemove = (i.collectionItem for t, i of slidesItems when ( Object.keys(trackCollection).findIndex((k) ->
 							trackCollection[k] == i.collectionItem
 						)) < 0)
