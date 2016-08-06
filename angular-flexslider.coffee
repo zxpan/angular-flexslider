@@ -42,7 +42,11 @@ angular.module('angular-flexslider', [])
 						callback?(slideItem)
 
 				removeSlide = (collectionItem, index) ->
-					track = getTrackFromItem collectionItem, index
+					keys = Object.keys(slidesItems)
+					idx = keys.findIndex ( (k, idx) ->
+                                                slidesItems[k].collectionItem == collectionItem
+                                        )
+					track = keys[idx]
 					slideItem = slidesItems[track]
 					return unless slideItem?
 					delete slidesItems[track]
@@ -63,7 +67,9 @@ angular.module('angular-flexslider', [])
 							trackCollection[getTrackFromItem(c, i)] = c
 						# Generates arrays of collection items to add and remvoe
 						toAdd = ({ value: c, index: i } for c, i in collection when not slidesItems[getTrackFromItem(c, i)]?)
-						toRemove = (i.collectionItem for t, i of slidesItems when not trackCollection[t]?)
+						toRemove = (i.collectionItem for t, i of slidesItems when ( Object.keys(trackCollection).findIndex((k) ->
+							trackCollection[k] == i.collectionItem
+						)) < 0)
 						# Workaround to a still unresolved problem in using flexslider.addSlide
 						if (toAdd.length == 1 and toRemove.length == 0) or toAdd.length == 0
 							# Remove items
